@@ -1,12 +1,8 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
 #Python For Everybody
 ##1 - Programming For Everybody
 ###1) demo
-```{r, engine='python'}
+
+```python
 # get the name of the file and open it
 name = "words.txt"
 handle = open(name, 'r')
@@ -30,8 +26,13 @@ for word,count in counts.items():
 print bigword, bigcount
 ```
 
+```
+## world 8
+```
+
 ###2) try & except
-```{r, engine='python'}
+
+```python
 astr = 'Hello Bob'
 try:
     istr = int(astr)    # this won't work, hence crash out if not for except
@@ -46,16 +47,27 @@ except:
 print 'Second', istr
 ```
 
+```
+## First -1
+## Second 123
+```
+
 ###3) simple function with returns
-```{r, engine='python'}
+
+```python
 def addtwo(a,b):
     added = a + b
     return added
 print 'addtwo func:', addtwo(37, 43)
 ```
 
+```
+## addtwo func: 80
+```
+
 ###4) basic breaking out of loop
-```{r, engine='python'}
+
+```python
 while True:
     num = 11
     if num == 11:
@@ -64,14 +76,28 @@ while True:
 print 'Done!'
 ```
 
+```
+## Done!
+```
+
 ###5) basic for-loop
-```{r, engine='python'}
+
+```python
 for i in [5,4,3,2,1]:
     print i
 ```
 
+```
+## 5
+## 4
+## 3
+## 2
+## 1
+```
+
 ###6) finding smallest number (using 'None' and 'is')
-```{r, engine='python'}
+
+```python
 smallest = None
 print 'Before'
 for value in [9,41,12,3,74,15]:
@@ -81,4 +107,15 @@ for value in [9,41,12,3,74,15]:
         smallest = value
     print smallest, value
 print 'After', smallest
+```
+
+```
+## Before
+## 9 9
+## 9 41
+## 9 12
+## 3 3
+## 3 74
+## 3 15
+## After 3
 ```
