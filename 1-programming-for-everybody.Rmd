@@ -1,0 +1,79 @@
+#Python For Everybody
+##1 - Programming For Everybody
+###1) demo
+```{r, engine='python'}
+# get the name of the file and open it
+name = "words.txt"
+handle = open(name, 'r')
+text = handle.read()
+words = text.split()
+
+# count word frequency
+counts = dict()
+for word in words:
+    counts[word] = counts.get(word,0) + 1
+
+# find the most common word
+bigcount = None
+bigword = None
+for word,count in counts.items():
+    if bigcount is None or count > bigcount:
+        bigword = word
+        bigcount = count
+        
+# all done
+print bigword, bigcount
+```
+
+###2) try & except
+```{r, engine='python'}
+astr = 'Hello Bob'
+try:
+    istr = int(astr)    # this won't work, hence crash out if not for except
+except:
+    istr = -1
+print 'First', istr
+astr = '123'
+try:
+    istr = int(astr)
+except:
+    istr = -1
+print 'Second', istr
+```
+
+###3) simple function with returns
+```{r, engine='python'}
+def addtwo(a,b):
+    added = a + b
+    return added
+print 'addtwo func:', addtwo(37, 43)
+```
+
+###4) basic breaking out of loop
+```{r, engine='python'}
+while True:
+    num = 11
+    if num == 11:
+        break # other wise, infinite loop
+    print num
+print 'Done!'
+```
+
+###5) basic for-loop
+```{r, engine='python'}
+for i in [5,4,3,2,1]:
+    print i
+```
+
+###6) finding smallest number (using 'None' and 'is')
+```{r, engine='python'}
+smallest = None
+print 'Before'
+for value in [9,41,12,3,74,15]:
+    if smallest is None:
+        smallest = value
+    elif value < smallest:
+        smallest = value
+    print smallest, value
+print 'After', smallest
+```
