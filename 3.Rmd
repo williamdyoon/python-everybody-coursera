@@ -1,0 +1,99 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+---
+#Python For Everybody
+##3 - Using Python to Access Web Data
+
+###0) python version used
+```{r, engine='python'}
+import sys
+print(sys.version)
+```
+
+###1) regex simple examples
+```{r, engine='python'}
+import re
+hand = open('mbox-short.txt')
+for line in hand:
+    line = line.rstrip()
+    if re.search('^From: ', line):
+        print line
+        break
+x = 'My 2 favorite numbers are 19 and 42'
+y = re.findall('[0-9]+',x)
+print y
+
+a = 'From: Using the : character'
+b = re.findall('^F.+:', a) # greedy
+c = re.findall('^F.+?:', a) # NON-greedy
+print "greedy:", b
+print "non-greedy:", c
+```
+
+###2) regex simple examples2
+```{r, engine='python'}
+import re
+x = "From stephen.marquard@uct.ac.za Sat Jan 5 09:14:16 2008"
+y = re.findall('\S+@\S+', x) # (>=1) non-whitespace character before @ and then (>=1) non-whitespace character until whitespace 
+z = re.findall('^From (\S+@\S+)', x) # same as above but specific extraction for line that starts with From
+print y
+print z
+
+# extracting only the domain name of the e-mail (aka "uct.ac.za")
+a = re.findall('@([^ ]*)',x) # where it has @, extracts after it anything that isn't whitespace >= 0 times until whitespace
+b = re.findall('@(\S*)',x)  # same as above basically
+print a
+print b
+
+# extracting just numbers and collecting into a list (floating num)
+hand = open('mbox-short.txt')
+numlist = list()
+for line in hand:
+    line = line.rstrip()
+    # ['X-DSPAM-Confidence: 0.8475'] needs to extract #.###
+    stuff = re.findall('^X-DSPAM-Confidence: ([0-9.]+)',line) 
+    if len(stuff) != 1 : continue
+    num = float(stuff[0])
+    numlist.append(num)
+print "max:", max(numlist)
+
+# extracting special reserved keywords
+xxx = 'We just received $10.00 for cookies.'
+print re.findall('\$[0-9.]+',xxx)
+```
+
+###3) basic connection via socket examples
+```{r, engine='python'}
+## does not function as instructed due to cloudflare
+import socket
+mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+mysock.connect(('www.py4inf.com',80)) #socket extablished at this point
+
+mysock.send('GET http://www.py4inf.com/code/romeo.txt HTTP/1.0\n\n')
+while True:
+    data = mysock.recv(512)
+    if(len(data)<1):
+        break
+    print data;
+mysock.close()
+```
+
+###4) revisting (3) using urllib
+```{r, engine='python'}
+## same error due to cloudflare protection system
+import urllib
+fhand = urllib.urlopen('http://www.py4inf.com/code/romeo.txt')
+for line in fhand:
+    print line.strip()
+    break
+
+# urllib allows functionalities like file handler
+counts = dict()
+for line in fhand:
+    words = line.split()
+    for word in words:
+        couns[word] = counts.get(word,0) + 1
+print counts
+```
