@@ -63,8 +63,8 @@ img {
 
 <div id="python-for-everybody" class="section level1">
 <h1>Python For Everybody</h1>
-<div id="programming-for-everybody" class="section level2">
-<h2>1 - Programming For Everybody</h2>
+<div id="python-data-structures" class="section level2">
+<h2>2 - Python Data Structures</h2>
 <div id="python-version-used" class="section level3">
 <h3>0) python version used</h3>
 <pre class="python"><code>import sys
@@ -72,95 +72,313 @@ print(sys.version)</code></pre>
 <pre><code>## 2.7.10 (default, Oct 23 2015, 18:05:06) 
 ## [GCC 4.2.1 Compatible Apple LLVM 7.0.0 (clang-700.0.59.5)]</code></pre>
 </div>
-<div id="demo" class="section level3">
-<h3>1) demo</h3>
-<pre class="python"><code># get the name of the file and open it
-name = &quot;words.txt&quot;
+<div id="string-simple-examples" class="section level3">
+<h3>1) string simple examples</h3>
+<pre class="python"><code>fruit = 'banana'
+index = 0
+while index &lt; len(fruit):
+    letter = fruit[index]
+    print index, letter.upper()
+    index = index + 1
+other_fruits = 'STRAWBERRY'
+for letter in other_fruits:
+    print letter.lower()</code></pre>
+<pre><code>## 0 B
+## 1 A
+## 2 N
+## 3 A
+## 4 N
+## 5 A
+## s
+## t
+## r
+## a
+## w
+## b
+## e
+## r
+## r
+## y</code></pre>
+</div>
+<div id="string-search-and-replace-example" class="section level3">
+<h3>2) string search and replace example</h3>
+<pre class="python"><code>fruit = 'banana'
+print &quot;first occurrence:&quot;, fruit.find('na')
+print &quot;cannot find:&quot;, fruit.find('z')
+
+greet = 'Hello Bob'
+print &quot;search and replace:&quot;, greet.replace('Bob', 'Jane')
+print &quot;multiple searches and replaces:&quot;, greet.replace('o','x')</code></pre>
+<pre><code>## first occurrence: 2
+## cannot find: -1
+## search and replace: Hello Jane
+## multiple searches and replaces: Hellx Bxb</code></pre>
+</div>
+<div id="stripping-whitespace-example" class="section level3">
+<h3>3) stripping whitespace example</h3>
+<pre class="python"><code>greet = ' Hello Bob '
+print &quot;-&gt;&quot;+greet.lstrip()+&quot;&lt;-&quot;, &quot;-&gt;&quot;+greet.rstrip()+&quot;&lt;-&quot;, &quot;-&gt;&quot;+greet.strip()+&quot;&lt;-&quot;</code></pre>
+<pre><code>## -&gt;Hello Bob &lt;- -&gt; Hello Bob&lt;- -&gt;Hello Bob&lt;-</code></pre>
+</div>
+<div id="finding-using-indices-example" class="section level3">
+<h3>4) finding using indices example</h3>
+<pre class="python"><code>data = 'From stephen.marquard@uct.ac.za Sat Jan 5 09:14:16 2008'
+atpos = data.find('@')
+sspos = data.find(' ', atpos)
+print atpos, sspos, &quot;-&gt;&quot;+data[atpos+1:sspos]+&quot;&lt;-&quot;</code></pre>
+<pre><code>## 21 31 -&gt;uct.ac.za&lt;-</code></pre>
+</div>
+<div id="simple-reading-file-example" class="section level3">
+<h3>5) simple reading file example</h3>
+<pre class="python"><code># iterating through the handler throughout the file (till eof)
+fhand = open(&quot;mbox-short.txt&quot;)
+count = 0
+for line in fhand:
+    count = count + 1
+print &quot;line count:&quot;, count
+
+# reading into memory of entirety of the file (based on the handler)
+fhand = open(&quot;mbox-short.txt&quot;)
+inp = fhand.read()
+print &quot;character count:&quot;, len(inp)
+
+# search through a file
+fhand = open(&quot;mbox-short.txt&quot;)
+for line in fhand:
+    if not line.startswith(&quot;From:&quot;):
+        continue # skip this iteration to next
+    print line.rstrip()
+    break # too many outputs hence just one output
+    
+# selecting a specific line in a file
+fhand = open(&quot;mbox-short.txt&quot;)
+for line in fhand:
+    if not &quot;@uct.ac.za&quot; in line:
+        continue
+    print line.rstrip()
+    break # too many outputs hence just one output</code></pre>
+<pre><code>## line count: 1910
+## character count: 94626
+## From: stephen.marquard@uct.ac.za
+## From stephen.marquard@uct.ac.za Sat Jan  5 09:14:16 2008</code></pre>
+</div>
+<div id="basic-list-examples" class="section level3">
+<h3>6) basic list examples</h3>
+<pre class="python"><code>friends = ['Joseph', 'Glenn', 'Sally']
+print &quot;length:&quot;, len(friends)
+print &quot;range:&quot;, range(len(friends))
+
+for friend in friends:
+    print &quot;Happy New Year:&quot;, friend
+for i in range(len(friends)): # achieves the same thing as above by using traditional (for index in number) method
+    friend = friends[i]
+    print &quot;Happy New Year:&quot;, friend
+    
+t = [9,41,12,3,74,15]
+print(t[1:3]) # index 1 to right before 3rd index (41, 12, not including 3)
+print(t[:4]) # begining of the list upto but not including 4th index (9,41,12,3)
+
+stuff = list()
+stuff.append('book')
+stuff.append(99)
+stuff.append('cookie')
+print stuff
+
+some = [1,9,21,10,16]
+print 9 in some # 9 IS in the list, hence TRUE
+print 20 not in some # 20 IS NOT in the list, hence TRUE
+
+print friends
+friends.sort() # changes/mutates/modifies the list
+print friends
+
+nums = [3,41,12,9,74,15]
+print &quot;length:&quot;, len(nums) # length of list
+print &quot;max:&quot;, max(nums) # maximum value of the list
+print &quot;min:&quot;, min(nums) # minimum value of the list
+print &quot;sum:&quot;, sum(nums) # total sum value of the list
+print &quot;avg:&quot;, sum(nums)/len(nums) # average value of the list
+
+abc = 'With three words'
+abc2 = 'first;second;third'
+stuff = abc.split() # split the string into list of strings, split by whitespace
+stuff2 = abc2.split(';') # split using ; as delimiter
+print stuff
+print stuff2</code></pre>
+<pre><code>## length: 3
+## range: [0, 1, 2]
+## Happy New Year: Joseph
+## Happy New Year: Glenn
+## Happy New Year: Sally
+## Happy New Year: Joseph
+## Happy New Year: Glenn
+## Happy New Year: Sally
+## [41, 12]
+## [9, 41, 12, 3]
+## ['book', 99, 'cookie']
+## True
+## True
+## ['Joseph', 'Glenn', 'Sally']
+## ['Glenn', 'Joseph', 'Sally']
+## length: 6
+## max: 74
+## min: 3
+## sum: 154
+## avg: 25
+## ['With', 'three', 'words']
+## ['first', 'second', 'third']</code></pre>
+</div>
+<div id="mbox-list-example" class="section level3">
+<h3>6) mbox list example</h3>
+<pre class="python"><code>fhand = open('mbox-short.txt')
+for line in fhand:
+    line = line.rstrip()
+    if not line.startswith('From '): continue
+    words = line.split()
+    email = words[1]
+    pieces = email.split('@') # double splitting
+    print pieces
+    break</code></pre>
+<pre><code>## ['stephen.marquard', 'uct.ac.za']</code></pre>
+</div>
+<div id="dictionary-simple-examples" class="section level3">
+<h3>7) dictionary simple examples</h3>
+<pre class="python"><code>purse = dict()
+purse['money'] = 12 #key='money', value=12
+purse['candy'] = 3
+purse['tissues'] = 75
+print purse
+print purse['candy'] # printing value by key
+purse['candy'] = purse['candy'] + 2 # mutating 'candy' key's value by increase of 2
+print purse
+
+ddd = dict()
+ddd['age'] = 21 # ~ list.append(##) 
+ddd['course'] = 182 # except dictionary requires no order (there is no order)
+
+jjj = {'chuck':1,'fred':42,'jan':100} # another way to initialize dictionary
+for aaa,bbb in jjj.items():
+    print aaa, bbb ## orders it by key and prints it</code></pre>
+<pre><code>## {'money': 12, 'tissues': 75, 'candy': 3}
+## 3
+## {'money': 12, 'tissues': 75, 'candy': 5}
+## jan 100
+## chuck 1
+## fred 42</code></pre>
+</div>
+<div id="revisiting-demo" class="section level3">
+<h3>7) revisiting demo</h3>
+<pre class="python"><code>name = &quot;mbox-short.txt&quot;
 handle = open(name, 'r')
 text = handle.read()
-words = text.split()
+words = text.split() # splits into a list
 
-# count word frequency
 counts = dict()
 for word in words:
-    counts[word] = counts.get(word,0) + 1
+    counts[word] = counts.get(word,0) + 1 # assign key / value(counts) into the dictionary
 
-# find the most common word
 bigcount = None
 bigword = None
-for word,count in counts.items():
+for word, count in counts.items(): # iterating through the dictionary 
     if bigcount is None or count &gt; bigcount:
         bigword = word
         bigcount = count
-        
-# all done
 print bigword, bigcount</code></pre>
-<pre><code>## world 8</code></pre>
+<pre><code>## Jan 352</code></pre>
 </div>
-<div id="try-except" class="section level3">
-<h3>2) try &amp; except</h3>
-<pre class="python"><code>astr = 'Hello Bob'
-try:
-    istr = int(astr)    # this won't work, hence crash out if not for except
-except:
-    istr = -1
-print 'First', istr
-astr = '123'
-try:
-    istr = int(astr)
-except:
-    istr = -1
-print 'Second', istr</code></pre>
-<pre><code>## First -1
-## Second 123</code></pre>
-</div>
-<div id="simple-function-with-returns" class="section level3">
-<h3>3) simple function with returns</h3>
-<pre class="python"><code>def addtwo(a,b):
-    added = a + b
-    return added
-print 'addtwo func:', addtwo(37, 43)</code></pre>
-<pre><code>## addtwo func: 80</code></pre>
-</div>
-<div id="basic-breaking-out-of-loop" class="section level3">
-<h3>4) basic breaking out of loop</h3>
-<pre class="python"><code>while True:
-    num = 11
-    if num == 11:
-        break # other wise, infinite loop
-    print num
-print 'Done!'</code></pre>
-<pre><code>## Done!</code></pre>
-</div>
-<div id="basic-for-loop" class="section level3">
-<h3>5) basic for-loop</h3>
-<pre class="python"><code>for i in [5,4,3,2,1]:
-    print i</code></pre>
-<pre><code>## 5
-## 4
-## 3
+<div id="tuples-simple-examples" class="section level3">
+<h3>8) tuples simple examples</h3>
+<pre class="python"><code>x = ('Glenn', 'Sally', 'Joseph') # tuples are like lists
+print &quot;print x[2]:&quot;, x[2]
+y = (1,9,2)
+print &quot;y:&quot;, y
+print &quot;max:&quot;, max(y)
+for iter in y:
+    print iter
+# major difference is that tuples are immutable as opposed to list's mutability
+
+# cannot sort, append, reverse (as tuples are immutable)
+
+# tuples are more efficient; preferred over lists when using &quot;temporary&quot; variables
+
+# more tuple assignment
+(x,y) = (4, 'fred')
+print x,y
+a,b = 99,98
+print a,b
+
+# tuples and dictionaries
+d = dict()
+d['csev'] = 2
+d['cwen'] = 4
+for k,v in d.items():
+    print k,v
+tups = d.items()
+print tups # list of tuples
+
+print (0,1,2) &lt; (5,1,2) # tuples are comparable (each element at a time)
+
+# we can sort LISTS of tuples
+d = {'a':10, 'b':1, 'c':22}
+t = d.items()
+print &quot;list of tuples:&quot;,t
+t.sort()
+print &quot;sorted list of tuples:&quot;,t
+
+u = sorted(d.items()) # sorted takes sequence and returns sorted sequence
+
+for k,v in sorted(d.items()): # sorts by key not value
+    print k,v
+
+# sorting by value
+tmp = list()
+for k,v in d.items():
+    tmp.append((v,k)) # reverses key and value so that old key becomes new value, and vice-versa
+tmp.sort(reverse=True)
+print tmp</code></pre>
+<pre><code>## print x[2]: Joseph
+## y: (1, 9, 2)
+## max: 9
+## 1
+## 9
 ## 2
-## 1</code></pre>
+## 4 fred
+## 99 98
+## csev 2
+## cwen 4
+## [('csev', 2), ('cwen', 4)]
+## True
+## list of tuples: [('a', 10), ('c', 22), ('b', 1)]
+## sorted list of tuples: [('a', 10), ('b', 1), ('c', 22)]
+## a 10
+## b 1
+## c 22
+## [(22, 'c'), (10, 'a'), (1, 'b')]</code></pre>
 </div>
-<div id="finding-smallest-number-using-none-and-is" class="section level3">
-<h3>6) finding smallest number (using ‘None’ and ‘is’)</h3>
-<pre class="python"><code>smallest = None
-print 'Before'
-for value in [9,41,12,3,74,15]:
-    if smallest is None:
-        smallest = value
-    elif value &lt; smallest:
-        smallest = value
-    print smallest, value
-print 'After', smallest</code></pre>
-<pre><code>## Before
-## 9 9
-## 9 41
-## 9 12
-## 3 3
-## 3 74
-## 3 15
-## After 3</code></pre>
+<div id="revisiting-demo2" class="section level3">
+<h3>7) revisiting demo2</h3>
+<pre class="python"><code>name = &quot;mbox-short.txt&quot;
+fhand = open(name, 'r')
+counts = dict()
+for line in fhand:
+    words = line.split()
+    for word in words:
+        counts[word] = counts.get(word,0) + 1
+lst = list()
+for key, val in counts.items():
+    lst.append((val,key))
+lst.sort(reverse=True)
+for val,key in lst[:3]: # print top three counted words
+    print key, val</code></pre>
+<pre><code>## Jan 352
+## 2008 324
+## by 245</code></pre>
+</div>
+<div id="shorver-version-of-sorting-by-values" class="section level3">
+<h3>8) shorver version of sorting by values</h3>
+<pre class="python"><code>c = {'a':10, 'b':1, 'c':22}
+print sorted([(v,k) for k,v in c.items()])</code></pre>
+<pre><code>## [(1, 'b'), (10, 'a'), (22, 'c')]</code></pre>
 </div>
 </div>
 </div>

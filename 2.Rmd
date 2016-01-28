@@ -1,0 +1,256 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+---
+#Python For Everybody
+##2 - Python Data Structures
+
+###0) python version used
+```{r, engine='python'}
+import sys
+print(sys.version)
+```
+
+###1) string simple examples
+```{r, engine='python'}
+fruit = 'banana'
+index = 0
+while index < len(fruit):
+    letter = fruit[index]
+    print index, letter.upper()
+    index = index + 1
+other_fruits = 'STRAWBERRY'
+for letter in other_fruits:
+    print letter.lower()
+```
+
+###2) string search and replace example
+```{r, engine='python'}
+fruit = 'banana'
+print "first occurrence:", fruit.find('na')
+print "cannot find:", fruit.find('z')
+
+greet = 'Hello Bob'
+print "search and replace:", greet.replace('Bob', 'Jane')
+print "multiple searches and replaces:", greet.replace('o','x')
+```
+
+###3) stripping whitespace example
+```{r, engine='python'}
+greet = ' Hello Bob '
+print "->"+greet.lstrip()+"<-", "->"+greet.rstrip()+"<-", "->"+greet.strip()+"<-"
+```
+
+###4) finding using indices example
+```{r, engine='python'}
+data = 'From stephen.marquard@uct.ac.za Sat Jan 5 09:14:16 2008'
+atpos = data.find('@')
+sspos = data.find(' ', atpos)
+print atpos, sspos, "->"+data[atpos+1:sspos]+"<-"
+```
+
+###5) simple reading file example
+```{r, engine='python'}
+# iterating through the handler throughout the file (till eof)
+fhand = open("mbox-short.txt")
+count = 0
+for line in fhand:
+    count = count + 1
+print "line count:", count
+
+# reading into memory of entirety of the file (based on the handler)
+fhand = open("mbox-short.txt")
+inp = fhand.read()
+print "character count:", len(inp)
+
+# search through a file
+fhand = open("mbox-short.txt")
+for line in fhand:
+    if not line.startswith("From:"):
+        continue # skip this iteration to next
+    print line.rstrip()
+    break # too many outputs hence just one output
+    
+# selecting a specific line in a file
+fhand = open("mbox-short.txt")
+for line in fhand:
+    if not "@uct.ac.za" in line:
+        continue
+    print line.rstrip()
+    break # too many outputs hence just one output
+```
+
+
+###6) basic list examples
+```{r, engine='python'}
+friends = ['Joseph', 'Glenn', 'Sally']
+print "length:", len(friends)
+print "range:", range(len(friends))
+
+for friend in friends:
+    print "Happy New Year:", friend
+for i in range(len(friends)): # achieves the same thing as above by using traditional (for index in number) method
+    friend = friends[i]
+    print "Happy New Year:", friend
+    
+t = [9,41,12,3,74,15]
+print(t[1:3]) # index 1 to right before 3rd index (41, 12, not including 3)
+print(t[:4]) # begining of the list upto but not including 4th index (9,41,12,3)
+
+stuff = list()
+stuff.append('book')
+stuff.append(99)
+stuff.append('cookie')
+print stuff
+
+some = [1,9,21,10,16]
+print 9 in some # 9 IS in the list, hence TRUE
+print 20 not in some # 20 IS NOT in the list, hence TRUE
+
+print friends
+friends.sort() # changes/mutates/modifies the list
+print friends
+
+nums = [3,41,12,9,74,15]
+print "length:", len(nums) # length of list
+print "max:", max(nums) # maximum value of the list
+print "min:", min(nums) # minimum value of the list
+print "sum:", sum(nums) # total sum value of the list
+print "avg:", sum(nums)/len(nums) # average value of the list
+
+abc = 'With three words'
+abc2 = 'first;second;third'
+stuff = abc.split() # split the string into list of strings, split by whitespace
+stuff2 = abc2.split(';') # split using ; as delimiter
+print stuff
+print stuff2
+```
+
+###6) mbox list example
+```{r, engine='python'}
+fhand = open('mbox-short.txt')
+for line in fhand:
+    line = line.rstrip()
+    if not line.startswith('From '): continue
+    words = line.split()
+    email = words[1]
+    pieces = email.split('@') # double splitting
+    print pieces
+    break
+```
+
+###7) dictionary simple examples
+```{r, engine='python'}
+purse = dict()
+purse['money'] = 12 #key='money', value=12
+purse['candy'] = 3
+purse['tissues'] = 75
+print purse
+print purse['candy'] # printing value by key
+purse['candy'] = purse['candy'] + 2 # mutating 'candy' key's value by increase of 2
+print purse
+
+ddd = dict()
+ddd['age'] = 21 # ~ list.append(##) 
+ddd['course'] = 182 # except dictionary requires no order (there is no order)
+
+jjj = {'chuck':1,'fred':42,'jan':100} # another way to initialize dictionary
+for aaa,bbb in jjj.items():
+    print aaa, bbb ## orders it by key and prints it
+```
+
+###7) revisiting demo
+```{r, engine='python'}
+name = "mbox-short.txt"
+handle = open(name, 'r')
+text = handle.read()
+words = text.split() # splits into a list
+
+counts = dict()
+for word in words:
+    counts[word] = counts.get(word,0) + 1 # assign key / value(counts) into the dictionary
+
+bigcount = None
+bigword = None
+for word, count in counts.items(): # iterating through the dictionary 
+    if bigcount is None or count > bigcount:
+        bigword = word
+        bigcount = count
+print bigword, bigcount
+```
+
+###8) tuples simple examples
+```{r, engine='python'}
+x = ('Glenn', 'Sally', 'Joseph') # tuples are like lists
+print "print x[2]:", x[2]
+y = (1,9,2)
+print "y:", y
+print "max:", max(y)
+for iter in y:
+    print iter
+# major difference is that tuples are immutable as opposed to list's mutability
+
+# cannot sort, append, reverse (as tuples are immutable)
+
+# tuples are more efficient; preferred over lists when using "temporary" variables
+
+# more tuple assignment
+(x,y) = (4, 'fred')
+print x,y
+a,b = 99,98
+print a,b
+
+# tuples and dictionaries
+d = dict()
+d['csev'] = 2
+d['cwen'] = 4
+for k,v in d.items():
+    print k,v
+tups = d.items()
+print tups # list of tuples
+
+print (0,1,2) < (5,1,2) # tuples are comparable (each element at a time)
+
+# we can sort LISTS of tuples
+d = {'a':10, 'b':1, 'c':22}
+t = d.items()
+print "list of tuples:",t
+t.sort()
+print "sorted list of tuples:",t
+
+u = sorted(d.items()) # sorted takes sequence and returns sorted sequence
+
+for k,v in sorted(d.items()): # sorts by key not value
+    print k,v
+
+# sorting by value
+tmp = list()
+for k,v in d.items():
+    tmp.append((v,k)) # reverses key and value so that old key becomes new value, and vice-versa
+tmp.sort(reverse=True)
+print tmp
+```
+
+###7) revisiting demo2
+```{r, engine='python'}
+name = "mbox-short.txt"
+fhand = open(name, 'r')
+counts = dict()
+for line in fhand:
+    words = line.split()
+    for word in words:
+        counts[word] = counts.get(word,0) + 1
+lst = list()
+for key, val in counts.items():
+    lst.append((val,key))
+lst.sort(reverse=True)
+for val,key in lst[:3]: # print top three counted words
+    print key, val
+```
+
+###8) shorter version of sorting by values
+```{r, engine='python'}
+c = {'a':10, 'b':1, 'c':22}
+print sorted([(v,k) for k,v in c.items()])
+```

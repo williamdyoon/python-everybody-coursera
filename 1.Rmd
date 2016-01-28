@@ -5,6 +5,13 @@ output:
 ---
 #Python For Everybody
 ##1 - Programming For Everybody
+
+###0) python version used
+```{r, engine='python'}
+import sys
+print(sys.version)
+```
+
 ###1) demo
 ```{r, engine='python'}
 # get the name of the file and open it
