@@ -147,12 +147,12 @@ while True:
     print data;
 mysock.close()</code></pre>
 <pre><code>## HTTP/1.1 400 Bad Request
-## Date: Thu, 28 Jan 2016 21:14:19 GMT
+## Date: Thu, 28 Jan 2016 21:26:58 GMT
 ## Content-Type: text/html
 ## Connection: close
-## Set-Cookie: __cfduid=d71618e35864c7591021885b5002ee78b1454015659; expires=Fri, 27-Jan-17 21:14:19 GMT; path=/; domain=.py4inf.com; HttpOnly
+## Set-Cookie: __cfduid=ded8c656483a054acda64fb2a67f80ea21454016418; expires=Fri, 27-Jan-17 21:26:58 GMT; path=/; domain=.py4inf.com; HttpOnly
 ## Server: cloudflare-nginx
-## CF-RAY: 26bfb4cfea3a39be-PHX
+## CF-RAY: 26bfc756e6f839e2-PHX
 ## 
 ## &lt;html&gt;
 ## &lt;head&gt;&lt;title&gt;400 Bad Request&lt;/title&gt;&lt;/head&gt;
@@ -164,14 +164,49 @@ mysock.close()</code></pre>
 </div>
 <div id="revisting-3-using-urllib" class="section level3">
 <h3>4) revisting (3) using urllib</h3>
-<pre class="python"><code>## same error due to cloudflare protection system
+<pre class="python"><code>## same error due to cloudflare protection system, hence used github raw file format
 import urllib
-fhand = urllib.urlopen('http://www.py4inf.com/code/romeo.txt')
+fhand = urllib.urlopen('https://raw.githubusercontent.com/williamdyoon/python-everybody-coursera/master/romeo.txt')
 for line in fhand:
     print line.strip()
-    break
-</code></pre>
-<pre><code>## &lt;!DOCTYPE html&gt;</code></pre>
+
+## urllib allows similar functionality as file handler
+counts = dict()
+fhand = urllib.urlopen('https://raw.githubusercontent.com/williamdyoon/python-everybody-coursera/master/romeo.txt')
+for line in fhand:
+    words = line.split()
+    for word in words:
+        counts[word] = counts.get(word,0) + 1
+print counts</code></pre>
+<pre><code>## But soft what light through yonder window breaks
+## It is the east and Juliet is the sun
+## Arise fair sun and kill the envious moon
+## Who is already sick and pale with grief
+## {'and': 3, 'envious': 1, 'already': 1, 'fair': 1, 'is': 3, 'through': 1, 'pale': 1, 'yonder': 1, 'what': 1, 'sun': 2, 'Who': 1, 'But': 1, 'moon': 1, 'window': 1, 'sick': 1, 'east': 1, 'breaks': 1, 'grief': 1, 'with': 1, 'light': 1, 'It': 1, 'Arise': 1, 'kill': 1, 'the': 3, 'soft': 1, 'Juliet': 1}</code></pre>
+</div>
+<div id="understanding-html-samples" class="section level3">
+<h3>5) understanding HTML samples</h3>
+<pre class="python"><code>import urllib
+fhand = urllib.urlopen('http://www.dr-chuck.com/page1.html')
+for line in fhand:
+    print line.strip()</code></pre>
+<pre><code>## &lt;h1&gt;The First Page&lt;/h1&gt;
+## &lt;p&gt;
+## If you like, you can switch to the
+## &lt;a href=&quot;http://www.dr-chuck.com/page2.htm&quot;&gt;
+## Second Page&lt;/a&gt;.
+## &lt;/p&gt;</code></pre>
+</div>
+<div id="parsing-html-with-beautifulsoup-requires-beautifulsoup" class="section level3">
+<h3>6) parsing HTML with BeautifulSoup (REQUIRES BeautifulSoup)</h3>
+<pre class="python"><code>import urllib
+from BeautifulSoup import *
+html = urllib.urlopen('http://www.dr-chuck.com/page1.html').read()
+soup = BeautifulSoup(html)
+tags = soup('a')
+for tag in tags:
+    print tag.get('href', None)</code></pre>
+<pre><code>## http://www.dr-chuck.com/page2.htm</code></pre>
 </div>
 </div>
 </div>

@@ -82,18 +82,37 @@ mysock.close()
 
 ###4) revisting (3) using urllib
 ```{r, engine='python'}
-## same error due to cloudflare protection system
+## same error due to cloudflare protection system, hence used github raw file format
 import urllib
-fhand = urllib.urlopen('http://www.py4inf.com/code/romeo.txt')
+fhand = urllib.urlopen('https://raw.githubusercontent.com/williamdyoon/python-everybody-coursera/master/romeo.txt')
 for line in fhand:
     print line.strip()
-    break
 
-# urllib allows functionalities like file handler
+## urllib allows similar functionality as file handler
 counts = dict()
+fhand = urllib.urlopen('https://raw.githubusercontent.com/williamdyoon/python-everybody-coursera/master/romeo.txt')
 for line in fhand:
     words = line.split()
     for word in words:
-        couns[word] = counts.get(word,0) + 1
+        counts[word] = counts.get(word,0) + 1
 print counts
+```
+
+###5) understanding HTML samples
+```{r, engine='python'}
+import urllib
+fhand = urllib.urlopen('http://www.dr-chuck.com/page1.html')
+for line in fhand:
+    print line.strip()
+```
+
+###6) parsing HTML with BeautifulSoup (REQUIRES BeautifulSoup)
+```{r, engine='python'}
+import urllib
+from BeautifulSoup import *
+html = urllib.urlopen('http://www.dr-chuck.com/page1.html').read()
+soup = BeautifulSoup(html) # retrieve a list of the anchor tags
+tags = soup('a') # each tag is like a dictionary of HTML attributes
+for tag in tags:
+    print tag.get('href', None) # if not found, set it as None
 ```
