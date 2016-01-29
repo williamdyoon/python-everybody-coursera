@@ -147,12 +147,12 @@ while True:
     print data;
 mysock.close()</code></pre>
 <pre><code>## HTTP/1.1 400 Bad Request
-## Date: Thu, 28 Jan 2016 21:26:58 GMT
+## Date: Fri, 29 Jan 2016 00:36:32 GMT
 ## Content-Type: text/html
 ## Connection: close
-## Set-Cookie: __cfduid=ded8c656483a054acda64fb2a67f80ea21454016418; expires=Fri, 27-Jan-17 21:26:58 GMT; path=/; domain=.py4inf.com; HttpOnly
+## Set-Cookie: __cfduid=dd29cda9f64aea1046a8ac2245423a5a21454027792; expires=Sat, 28-Jan-17 00:36:32 GMT; path=/; domain=.py4inf.com; HttpOnly
 ## Server: cloudflare-nginx
-## CF-RAY: 26bfc756e6f839e2-PHX
+## CF-RAY: 26c0dd0665d613e9-LAX
 ## 
 ## &lt;html&gt;
 ## &lt;head&gt;&lt;title&gt;400 Bad Request&lt;/title&gt;&lt;/head&gt;
@@ -202,11 +202,153 @@ for line in fhand:
 <pre class="python"><code>import urllib
 from BeautifulSoup import *
 html = urllib.urlopen('http://www.dr-chuck.com/page1.html').read()
-soup = BeautifulSoup(html)
-tags = soup('a')
+soup = BeautifulSoup(html) # retrieve a list of the anchor tags
+tags = soup('a') # each tag is like a dictionary of HTML attributes
 for tag in tags:
-    print tag.get('href', None)</code></pre>
+    print tag.get('href', None) # if not found, set it as None  </code></pre>
 <pre><code>## http://www.dr-chuck.com/page2.htm</code></pre>
+</div>
+<div id="parsing-xml-using-python-basic" class="section level3">
+<h3>6) parsing XML using python basic</h3>
+<pre class="python"><code>import xml.etree.ElementTree as ET
+data = '''&lt;person&gt;
+  &lt;name&gt;Chuck&lt;/name&gt;
+  &lt;phone type=&quot;intl&quot;&gt;
+    +1 734 303 4456
+  &lt;/phone&gt;
+  &lt;email hide = &quot;yes&quot;/&gt;
+&lt;/person&gt;'''
+tree = ET.fromstring(data)  # simple XML tree formation
+print &quot;Name:&quot;,tree.find(&quot;name&quot;).text # can find using tree.find()
+print &quot;Attr:&quot;,tree.find(&quot;email&quot;).text</code></pre>
+<pre><code>## Name: Chuck
+## Attr: None</code></pre>
+</div>
+<div id="parsing-xml-using-python-basic2" class="section level3">
+<h3>7) parsing XML using python basic2</h3>
+<pre class="python"><code>import xml.etree.ElementTree as ET
+input = '''&lt;stuff&gt;
+  &lt;users&gt;
+    &lt;user x=&quot;2&quot;&gt;
+      &lt;id&gt;001&lt;/id&gt;
+      &lt;name&gt;Chuck&lt;/name&gt;
+    &lt;/user&gt;
+    &lt;user x=&quot;7&quot;&gt;
+      &lt;id&gt;009&lt;/id&gt;
+      &lt;name&gt;Brent&lt;/name&gt;
+    &lt;/user&gt;
+  &lt;/users&gt;
+&lt;/stuff&gt;'''
+stuff = ET.fromstring(input)
+lst = stuff.findall('users/user') # &lt;-- important, find user elements. printing lst is a useless venture
+print &quot;-&gt;&quot;,lst,&quot;&lt;-&quot;
+print 'User count:', len(lst)
+for item in lst:
+  print &quot;name:&quot;, item.find(&quot;name&quot;).text
+  print &quot;id:&quot;, item.find(&quot;id&quot;).text # id tag is a text, hence requires only text() after find()
+  print &quot;attribute:&quot;, item.get(&quot;x&quot;) # user's x variable is an attribute hence requires get()</code></pre>
+<pre><code>## -&gt; [&lt;Element 'user' at 0x10e7f1f90&gt;, &lt;Element 'user' at 0x10e7f72d0&gt;] &lt;-
+## User count: 2
+## name: Chuck
+## id: 001
+## attribute: 2
+## name: Brent
+## id: 009
+## attribute: 7</code></pre>
+</div>
+<div id="parsing-json-using-python-basic-dictionary" class="section level3">
+<h3>8) parsing JSON using python basic (dictionary)</h3>
+<pre class="python"><code>import json
+## json resembles tuples
+data = '''{
+  &quot;name&quot; : &quot;Chuck&quot;,
+  &quot;phone&quot; : {
+      &quot;type&quot; : &quot;intl&quot;,
+      &quot;number&quot; : &quot;+1 734 303 4456&quot;
+  },
+  &quot;email&quot; : {
+    &quot;hide&quot; : &quot;yes&quot;
+  }
+}'''
+info = json.loads(data) # loads the string into python format
+print type(info)
+print &quot;Name:&quot;, info[&quot;name&quot;]
+print &quot;Hide:&quot;, info[&quot;email&quot;][&quot;hide&quot;]</code></pre>
+<pre><code>## &lt;type 'dict'&gt;
+## Name: Chuck
+## Hide: yes</code></pre>
+</div>
+<div id="parsing-json-using-python-basic2-list" class="section level3">
+<h3>9) parsing JSON using python basic2 (list)</h3>
+<pre class="python"><code>import json
+input = '''[
+{
+  &quot;id&quot;:&quot;001&quot;,
+  &quot;x&quot;:&quot;2&quot;,
+  &quot;name&quot;:&quot;Chuck&quot;
+},
+{
+  &quot;id&quot;:&quot;009&quot;,
+  &quot;x&quot;:&quot;7&quot;,
+  &quot;name&quot;:&quot;Rawr&quot;
+}]'''
+info = json.loads(input)
+print type(info)
+print &quot;User count:&quot;, len(info)
+for item in info:
+  print &quot;Name:&quot;, item[&quot;name&quot;]
+  print &quot;Id:&quot;, item[&quot;id&quot;]
+  print &quot;Attribute:&quot;, item[&quot;x&quot;]</code></pre>
+<pre><code>## &lt;type 'list'&gt;
+## User count: 2
+## Name: Chuck
+## Id: 001
+## Attribute: 2
+## Name: Rawr
+## Id: 009
+## Attribute: 7</code></pre>
+</div>
+<div id="accessing-api-using-python-basic" class="section level3">
+<h3>10) accessing API using python basic</h3>
+<pre class="python"><code>## SOAP (Simple Object Access Protocol) (software) = bad, hard to use, overtly complex
+  ### remote programs / code which we use over the network
+## vs
+## REST (REpresentational State Transfer) (resource focused) = better
+  ### remote resources which we create, read, update, and delete remotely
+
+import urllib
+import json
+serviceurl = &quot;http://maps.googleapis.com/maps/api/geocode/json?&quot;
+
+while True:
+  address = &quot;Orange County, CA&quot;
+  if len(address) &lt; 1 : break
+  url = serviceurl + urllib.urlencode({'sensor':'false','address':address})
+  print &quot;Retrieving&quot;, url
+  uh = urllib.urlopen(url)
+  data = uh.read()
+  print &quot;Retrieved&quot;, len(data), &quot;characters&quot;
+  
+  try: js = json.loads(str(data))
+  except: js = None
+  
+  if 'status' not in js or js['status'] != 'OK':
+    print '==== Failure To Retrieve ===='
+    print data
+    break
+  
+  #print json.dumps(js, indent=4)
+  
+  lat = js[&quot;results&quot;][0][&quot;geometry&quot;][&quot;location&quot;][&quot;lat&quot;]
+  lng = js[&quot;results&quot;][0][&quot;geometry&quot;][&quot;location&quot;][&quot;lng&quot;]
+  print &quot;lat&quot;, lat, &quot;lng&quot;, lng
+  location = js[&quot;results&quot;][0][&quot;formatted_address&quot;]
+  print location
+  break</code></pre>
+<pre><code>## Retrieving http://maps.googleapis.com/maps/api/geocode/json?sensor=false&amp;address=Orange+County%2C+CA
+## Retrieved 1611 characters
+## lat 33.7174708 lng -117.8311428
+## Orange County, CA, USA</code></pre>
 </div>
 </div>
 </div>

@@ -3,17 +3,20 @@ output:
   html_document: 
     keep_md: yes
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, engine='python')
+```
 #Python For Everybody
 ##3 - Using Python to Access Web Data
 
 ###0) python version used
-```{r, engine='python'}
+```{r}
 import sys
 print(sys.version)
 ```
 
 ###1) regex simple examples
-```{r, engine='python'}
+```{r}
 import re
 hand = open('mbox-short.txt')
 for line in hand:
@@ -33,7 +36,7 @@ print "non-greedy:", c
 ```
 
 ###2) regex simple examples2
-```{r, engine='python'}
+```{r}
 import re
 x = "From stephen.marquard@uct.ac.za Sat Jan 5 09:14:16 2008"
 y = re.findall('\S+@\S+', x) # (>=1) non-whitespace character before @ and then (>=1) non-whitespace character until whitespace 
@@ -65,7 +68,7 @@ print re.findall('\$[0-9.]+',xxx)
 ```
 
 ###3) basic connection via socket examples
-```{r, engine='python'}
+```{r}
 ## does not function as instructed due to cloudflare
 import socket
 mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -81,7 +84,7 @@ mysock.close()
 ```
 
 ###4) revisting (3) using urllib
-```{r, engine='python'}
+```{r}
 ## same error due to cloudflare protection system, hence used github raw file format
 import urllib
 fhand = urllib.urlopen('https://raw.githubusercontent.com/williamdyoon/python-everybody-coursera/master/romeo.txt')
@@ -99,7 +102,7 @@ print counts
 ```
 
 ###5) understanding HTML samples
-```{r, engine='python'}
+```{r}
 import urllib
 fhand = urllib.urlopen('http://www.dr-chuck.com/page1.html')
 for line in fhand:
@@ -107,12 +110,139 @@ for line in fhand:
 ```
 
 ###6) parsing HTML with BeautifulSoup (REQUIRES BeautifulSoup)
-```{r, engine='python'}
+```{r}
 import urllib
 from BeautifulSoup import *
 html = urllib.urlopen('http://www.dr-chuck.com/page1.html').read()
 soup = BeautifulSoup(html) # retrieve a list of the anchor tags
 tags = soup('a') # each tag is like a dictionary of HTML attributes
 for tag in tags:
-    print tag.get('href', None) # if not found, set it as None
+    print tag.get('href', None) # if not found, set it as None  
+```
+
+###6) parsing XML using python basic
+```{r}
+import xml.etree.ElementTree as ET
+data = '''<person>
+  <name>Chuck</name>
+  <phone type="intl">
+    +1 734 303 4456
+  </phone>
+  <email hide = "yes"/>
+</person>'''
+tree = ET.fromstring(data)  # simple XML tree formation
+print "Name:",tree.find("name").text # can find using tree.find()
+print "Attr:",tree.find("email").text
+```
+
+###7) parsing XML using python basic2
+```{r}
+import xml.etree.ElementTree as ET
+input = '''<stuff>
+  <users>
+    <user x="2">
+      <id>001</id>
+      <name>Chuck</name>
+    </user>
+    <user x="7">
+      <id>009</id>
+      <name>Brent</name>
+    </user>
+  </users>
+</stuff>'''
+stuff = ET.fromstring(input)
+lst = stuff.findall('users/user') # <-- important, find user elements. printing lst is a useless venture
+print "->",lst,"<-"
+print 'User count:', len(lst)
+for item in lst:
+  print "name:", item.find("name").text
+  print "id:", item.find("id").text # id tag is a text, hence requires only text() after find()
+  print "attribute:", item.get("x") # user's x variable is an attribute hence requires get()
+``` 
+
+###8) parsing JSON using python basic (dictionary)
+```{r}
+import json
+## json resembles tuples
+data = '''{
+  "name" : "Chuck",
+  "phone" : {
+      "type" : "intl",
+      "number" : "+1 734 303 4456"
+  },
+  "email" : {
+    "hide" : "yes"
+  }
+}'''
+info = json.loads(data) # loads the string into python format
+print type(info)
+print "Name:", info["name"]
+print "Hide:", info["email"]["hide"]
+```
+
+###9) parsing JSON using python basic2 (list)
+```{r}
+import json
+input = '''[
+{
+  "id":"001",
+  "x":"2",
+  "name":"Chuck"
+},
+{
+  "id":"009",
+  "x":"7",
+  "name":"Rawr"
+}]'''
+info = json.loads(input)
+print type(info)
+print "User count:", len(info)
+for item in info:
+  print "Name:", item["name"]
+  print "Id:", item["id"]
+  print "Attribute:", item["x"]
+```
+
+###10) accessing API using python basic
+```{r}
+## SOAP (Simple Object Access Protocol) (software) = bad, hard to use, overtly complex
+  ### remote programs / code which we use over the network
+## vs
+## REST (REpresentational State Transfer) (resource focused) = better
+  ### remote resources which we create, read, update, and delete remotely
+
+import urllib
+import json
+serviceurl = "http://maps.googleapis.com/maps/api/geocode/json?"
+
+while True:
+  address = "Orange County, CA"
+  if len(address) < 1 : break
+  url = serviceurl + urllib.urlencode({'sensor':'false','address':address})
+  print "Retrieving", url
+  uh = urllib.urlopen(url)
+  data = uh.read()
+  print "Retrieved", len(data), "characters"
+  
+  try: js = json.loads(str(data))
+  except: js = None
+  
+  if 'status' not in js or js['status'] != 'OK':
+    print '==== Failure To Retrieve ===='
+    print data
+    break
+  
+  #print json.dumps(js, indent=4)
+  
+  lat = js["results"][0]["geometry"]["location"]["lat"]
+  lng = js["results"][0]["geometry"]["location"]["lng"]
+  print "lat", lat, "lng", lng
+  location = js["results"][0]["formatted_address"]
+  print location
+  break
+```
+
+###10) api security
+```{r}
+
 ```
