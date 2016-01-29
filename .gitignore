@@ -3,5 +3,4 @@ do-not-upload.py
 *.pyc
 *.swp
 hidden.py
-twurl.py
 3_cache/
