@@ -244,5 +244,16 @@ while True:
 
 ###10) api security
 ```{r}
+## some python 2.7.11 may require installation of oauth (in my case, yes)
+import urllib
+from twurl import augment
+
+print '* Calling Twitter...'
+url = augment("https://api.twitter.com/1.1/statuses/user_timeline.json", 
+              {"screen_name":"iamwilliamyoon", "count":"2"})
+connection = urllib.urlopen(url)
+data = connection.read()
+headers = connection.info().dict
+print headers
 
 ```

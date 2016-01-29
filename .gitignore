@@ -1,3 +1,6 @@
 do-not-upload.py
 .DS_Store
+*.pyc
+hidden.py
+twurl.py
 3_cache/
