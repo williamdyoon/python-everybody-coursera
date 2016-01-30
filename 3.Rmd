@@ -242,18 +242,41 @@ while True:
   break
 ```
 
-###10) api security
+###10) api security example1
 ```{r}
 ## some python 2.7.11 may require installation of oauth (in my case, yes)
 import urllib
-from twurl import augment
+from twurl import augment # twurl.py takes in secretive hidden.py that contains 
 
 print '* Calling Twitter...'
 url = augment("https://api.twitter.com/1.1/statuses/user_timeline.json", 
-              {"screen_name":"iamwilliamyoon", "count":"2"})
+              {"screen_name":"CodenameMPIM", "count":"3"})
 connection = urllib.urlopen(url)
 data = connection.read()
 headers = connection.info().dict
 print headers
+```
 
+###10) api security example2
+```{r}
+import urllib
+import twurl
+import json
+#import simplejson as json
+
+## warning: usually only 15 requests per 15-minute interval... infinite while True loop broke through the limit initially
+TWITTER_URL = "https://api.twitter.com/1.1/statuses/user_timeline.json"
+while True:
+    acct = "@yameyori"
+    if(len(acct)<1): break
+    print "Obtaining 5 latest tweets by", acct, "..."
+    url = twurl.augment(TWITTER_URL, {"screen_name":acct,"count":"5"})
+    connection = urllib.urlopen(url)
+    data = connection.read()
+    headers = connection.info().dict
+    print "Remaining", headers["x-rate-limit-remaining"]
+    js = json.loads(data)
+    for entry in js:
+        print entry["created_at"], entry["text"].encode('utf-8')
+    break
 ```
