@@ -3,17 +3,20 @@ output:
   html_document: 
     keep_md: yes
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, engine='python')
+```
 #Python For Everybody
 ##2 - Python Data Structures
 
 ###0) python version used
-```{r, engine='python'}
+```{r}
 import sys
 print(sys.version)
 ```
 
 ###1) string simple examples
-```{r, engine='python'}
+```{r}
 fruit = 'banana'
 index = 0
 while index < len(fruit):
@@ -26,7 +29,7 @@ for letter in other_fruits:
 ```
 
 ###2) string search and replace example
-```{r, engine='python'}
+```{r}
 fruit = 'banana'
 print "first occurrence:", fruit.find('na')
 print "cannot find:", fruit.find('z')
@@ -37,13 +40,13 @@ print "multiple searches and replaces:", greet.replace('o','x')
 ```
 
 ###3) stripping whitespace example
-```{r, engine='python'}
+```{r}
 greet = ' Hello Bob '
 print "->"+greet.lstrip()+"<-", "->"+greet.rstrip()+"<-", "->"+greet.strip()+"<-"
 ```
 
 ###4) finding using indices example
-```{r, engine='python'}
+```{r}
 data = 'From stephen.marquard@uct.ac.za Sat Jan 5 09:14:16 2008'
 atpos = data.find('@')
 sspos = data.find(' ', atpos)
@@ -51,7 +54,7 @@ print atpos, sspos, "->"+data[atpos+1:sspos]+"<-"
 ```
 
 ###5) simple reading file example
-```{r, engine='python'}
+```{r}
 # iterating through the handler throughout the file (till eof)
 fhand = open("mbox-short.txt")
 count = 0
@@ -83,7 +86,7 @@ for line in fhand:
 
 
 ###6) basic list examples
-```{r, engine='python'}
+```{r}
 friends = ['Joseph', 'Glenn', 'Sally']
 print "length:", len(friends)
 print "range:", range(len(friends))
@@ -128,7 +131,7 @@ print stuff2
 ```
 
 ###6) mbox list example
-```{r, engine='python'}
+```{r}
 fhand = open('mbox-short.txt')
 for line in fhand:
     line = line.rstrip()
@@ -141,7 +144,7 @@ for line in fhand:
 ```
 
 ###7) dictionary simple examples
-```{r, engine='python'}
+```{r}
 purse = dict()
 purse['money'] = 12 #key='money', value=12
 purse['candy'] = 3
@@ -161,7 +164,7 @@ for aaa,bbb in jjj.items():
 ```
 
 ###7) revisiting demo
-```{r, engine='python'}
+```{r}
 name = "mbox-short.txt"
 handle = open(name, 'r')
 text = handle.read()
@@ -181,7 +184,7 @@ print bigword, bigcount
 ```
 
 ###8) tuples simple examples
-```{r, engine='python'}
+```{r}
 x = ('Glenn', 'Sally', 'Joseph') # tuples are like lists
 print "print x[2]:", x[2]
 y = (1,9,2)
@@ -233,7 +236,7 @@ print tmp
 ```
 
 ###7) revisiting demo2
-```{r, engine='python'}
+```{r}
 name = "mbox-short.txt"
 fhand = open(name, 'r')
 counts = dict()
@@ -250,7 +253,7 @@ for val,key in lst[:3]: # print top three counted words
 ```
 
 ###8) shorter version of sorting by values
-```{r, engine='python'}
+```{r}
 c = {'a':10, 'b':1, 'c':22}
 print sorted([(v,k) for k,v in c.items()])
 ```
