@@ -3,17 +3,20 @@ output:
   html_document: 
     keep_md: yes
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, engine='python')
+```
 #Python For Everybody
 ##1 - Programming For Everybody
 
 ###0) python version used
-```{r, engine='python'}
+```{r}
 import sys
 print(sys.version)
 ```
 
 ###1) demo
-```{r, engine='python'}
+```{r}
 # get the name of the file and open it
 name = "words.txt"
 handle = open(name, 'r')
@@ -38,7 +41,7 @@ print bigword, bigcount
 ```
 
 ###2) try & except
-```{r, engine='python'}
+```{r}
 astr = 'Hello Bob'
 try:
     istr = int(astr)    # this won't work, hence crash out if not for except
@@ -54,7 +57,7 @@ print 'Second', istr
 ```
 
 ###3) simple function with returns
-```{r, engine='python'}
+```{r}
 def addtwo(a,b):
     added = a + b
     return added
@@ -62,7 +65,7 @@ print 'addtwo func:', addtwo(37, 43)
 ```
 
 ###4) basic breaking out of loop
-```{r, engine='python'}
+```{r}
 while True:
     num = 11
     if num == 11:
@@ -72,13 +75,13 @@ print 'Done!'
 ```
 
 ###5) basic for-loop
-```{r, engine='python'}
+```{r}
 for i in [5,4,3,2,1]:
     print i
 ```
 
 ###6) finding smallest number (using 'None' and 'is')
-```{r, engine='python'}
+```{r}
 smallest = None
 print 'Before'
 for value in [9,41,12,3,74,15]:
