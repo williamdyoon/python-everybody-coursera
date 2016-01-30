@@ -352,7 +352,7 @@ while True:
 </div>
 <div id="api-security-example1" class="section level3">
 <h3>10) api security example1</h3>
-<pre class="python"><code>## some python 2.7.11 may require installation of oauth (in my case, yes)
+<pre class="python"><code>## some python 2.7.11 may require installation of oauth as it may not be installed by default
 import urllib
 from twurl import augment # twurl.py takes in secretive hidden.py that contains 
 
@@ -364,14 +364,13 @@ data = connection.read()
 headers = connection.info().dict
 print headers</code></pre>
 <pre><code>## * Calling Twitter...
-## {'content-length': '7934', 'x-rate-limit-reset': '1454103269', 'x-rate-limit-remaining': '173', 'x-xss-protection': '1; mode=block', 'x-content-type-options': 'nosniff', 'x-connection-hash': '532b81721fc1f6f95aa51d521c97a532', 'x-twitter-response-tags': 'BouncerCompliant', 'cache-control': 'no-cache, no-store, must-revalidate, pre-check=0, post-check=0', 'status': '200 OK', 'content-disposition': 'attachment; filename=json.json', 'set-cookie': 'lang=en; Path=/, guest_id=v1%3A145410308848171614; Domain=.twitter.com; Path=/; Expires=Sun, 28-Jan-2018 21:31:28 UTC', 'expires': 'Tue, 31 Mar 1981 05:00:00 GMT', 'x-access-level': 'read-write', 'last-modified': 'Fri, 29 Jan 2016 21:31:28 GMT', 'pragma': 'no-cache', 'date': 'Fri, 29 Jan 2016 21:31:28 GMT', 'x-rate-limit-limit': '180', 'x-response-time': '40', 'x-transaction': '0701ddcd0ece1ae5', 'strict-transport-security': 'max-age=631138519', 'server': 'tsa_a', 'x-frame-options': 'SAMEORIGIN', 'content-type': 'application/json;charset=utf-8'}</code></pre>
+## {'content-length': '7934', 'x-rate-limit-reset': '1454121744', 'x-rate-limit-remaining': '179', 'x-xss-protection': '1; mode=block', 'x-content-type-options': 'nosniff', 'x-connection-hash': 'f552a51c3b24542463d4b8212db980ee', 'x-twitter-response-tags': 'BouncerCompliant', 'cache-control': 'no-cache, no-store, must-revalidate, pre-check=0, post-check=0', 'status': '200 OK', 'content-disposition': 'attachment; filename=json.json', 'set-cookie': 'lang=en; Path=/, guest_id=v1%3A145412084433852990; Domain=.twitter.com; Path=/; Expires=Mon, 29-Jan-2018 02:27:24 UTC', 'expires': 'Tue, 31 Mar 1981 05:00:00 GMT', 'x-access-level': 'read-write', 'last-modified': 'Sat, 30 Jan 2016 02:27:24 GMT', 'pragma': 'no-cache', 'date': 'Sat, 30 Jan 2016 02:27:24 GMT', 'x-rate-limit-limit': '180', 'x-response-time': '151', 'x-transaction': '9a9167db393dbe7d', 'strict-transport-security': 'max-age=631138519', 'server': 'tsa_a', 'x-frame-options': 'SAMEORIGIN', 'content-type': 'application/json;charset=utf-8'}</code></pre>
 </div>
 <div id="api-security-example2" class="section level3">
 <h3>10) api security example2</h3>
 <pre class="python"><code>import urllib
 import twurl
 import json
-#import simplejson as json
 
 ## warning: usually only 15 requests per 15-minute interval... infinite while True loop broke through the limit initially
 TWITTER_URL = &quot;https://api.twitter.com/1.1/statuses/user_timeline.json&quot;
@@ -389,12 +388,12 @@ while True:
         print entry[&quot;created_at&quot;], entry[&quot;text&quot;].encode('utf-8')
     break</code></pre>
 <pre><code>## Obtaining 5 latest tweets by @yameyori ...
-## Remaining 170
+## Remaining 178
+## Sat Jan 30 02:27:02 +0000 2016 오늘 NMB48 다큐 무대인사 보러옴! 어제 상영 때와 다른 점은... 영화 끝나고 덕후동료들이 우렁찬 박수를 친닼ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ https://t.co/lSnHIO5MAX
 ## Fri Jan 29 23:54:26 +0000 2016 담벼락 사이에 살고 있는 고양이 두 마리 https://t.co/jrW5teddYt
 ## Fri Jan 29 23:13:39 +0000 2016 RT @BAMnight_: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ아 스발 너무 귀여워서 숨을쉴수가 업다ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ https://t.co/tn…
 ## Fri Jan 29 23:00:24 +0000 2016 RT @ztvaa: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ(웃다가 죽음) https://t.co/lBQb…
-## Fri Jan 29 16:13:39 +0000 2016 먀오가 오랜만에 무대 서서 너무 기분 좋음 ㅠㅠ 먀오야 축하해! https://t.co/2SmYjF3rIs
-## Fri Jan 29 14:24:52 +0000 2016 여자도 매력있고 귀여운 여자 좋아하니까 여자가 여돌 판다고 그만 좀 놀라시게...</code></pre>
+## Fri Jan 29 16:13:39 +0000 2016 먀오가 오랜만에 무대 서서 너무 기분 좋음 ㅠㅠ 먀오야 축하해! https://t.co/2SmYjF3rIs</code></pre>
 </div>
 </div>
 </div>

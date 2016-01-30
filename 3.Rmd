@@ -244,7 +244,7 @@ while True:
 
 ###10) api security example1
 ```{r}
-## some python 2.7.11 may require installation of oauth (in my case, yes)
+## some python 2.7.11 may require installation of oauth as it may not be installed by default
 import urllib
 from twurl import augment # twurl.py takes in secretive hidden.py that contains 
 
@@ -262,7 +262,6 @@ print headers
 import urllib
 import twurl
 import json
-#import simplejson as json
 
 ## warning: usually only 15 requests per 15-minute interval... infinite while True loop broke through the limit initially
 TWITTER_URL = "https://api.twitter.com/1.1/statuses/user_timeline.json"
