@@ -268,7 +268,7 @@ TWITTER_URL = "https://api.twitter.com/1.1/statuses/user_timeline.json"
 while True:
     acct = "@yameyori"
     if(len(acct)<1): break
-    print "Obtaining 5 latest tweets by", acct, "..."
+    print "Obtaining 5 latest tweets by", acct
     url = twurl.augment(TWITTER_URL, {"screen_name":acct,"count":"5"})
     connection = urllib.urlopen(url)
     data = connection.read()

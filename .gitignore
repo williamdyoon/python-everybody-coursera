@@ -3,6 +3,7 @@ do-not-upload.py
 *.pyc
 *.swp
 hidden.py
+4_cache/
 3_cache/
 2_cache/
 1_cache/

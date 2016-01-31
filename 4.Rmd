@@ -1,0 +1,188 @@
+---
+output: 
+  html_document: 
+    keep_md: yes
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE, engine='python')
+```
+#Python For Everybody
+##4 - Using Databases with Python
+
+###0) python version used
+```{r}
+import sys
+print(sys.version)
+```
+
+###1) object oriented python intro
+```{r}
+movies = list()
+movie1={"Director" : "James Cameron", "Title" : "Avatar", "Release Date" : "18 December 2009", "Running Time" : "162 minutes", "Rating" : "PG-13"}
+movies.append(movie1)
+movie2={"Director" : "David Fincher", "Title" : "The Social Network", "Release Date" : "01 October 2010", "Running Time" : "120 minutes", "Rating" : "PG-13"}
+movies.append(movie2)
+
+keys = ["Title", "Director", "Rating", "Running Time"]
+print movies
+for item in movies:
+    print "-------------------------"
+    for key in keys:
+        print key + ":", item[key] # because we expect the list of dictionary to contain values for the keys
+print "-------------------------"
+```
+
+###2) simple python objects example
+```{r}
+class PartyAnimal:
+    x = 0
+    def party(self):
+        self.x = self.x + 1
+        print "So far", self.x
+an = PartyAnimal() # instance with initial x attribute equaling 0
+print "type:", type(an)
+print "dir:", dir(an)
+an.party() # increments x attribute by 1, prints it (1)
+an.party() # "" (2)
+an.party() # "" (3)
+```
+
+###3) simple demonstration of object lifecycle1
+```{r}
+class PartyAnimal:
+    x = 0
+    def __init__(self): ## two underscores each side
+        print "I am constructed"
+    def party(self):
+        self.x = self.x + 1
+        print "So far", self.x
+    def __del__(self): ## destructor
+        print "I am destructed", self.x
+an = PartyAnimal()
+an.party()
+an.party()
+an.party()
+```
+
+###4) simple demonstration of object lifecycle2
+```{r}
+class PartyAnimal:
+    x = 0
+    name = ""
+    def __init__(self,nam):
+        self.name = nam
+        print self.name, "constructed"
+    def party(self):
+        self.x = self.x + 1
+        print self.name, "party count", self.x
+s = PartyAnimal("Sally")
+s.party()
+j = PartyAnimal("Jim")
+j.party()
+s.party()
+```
+
+###5) inheritance simple example
+```{r}
+class PartyAnimal:
+    x = 0
+    name = ""
+    def __init__(self,nam):
+        self.name = nam
+        print self.name, "constructed"
+    def party(self):
+        self.x = self.x + 1
+        print self.name, "party count", self.x
+class FootballFan(PartyAnimal): # inherits all of the PartyAnimal class
+    points = 0
+    def touchdown(self):
+        self.points = self.points + 7
+        self.party() # inherited method from Parent class
+        print self.name, "points", self.points
+s = PartyAnimal("Sally")
+s.party()
+j = FootballFan("Jim") # inherits or extends Parent's attributes x,name
+j.party()
+j.touchdown()
+```
+
+###6) email database demo example
+```{r}
+import sqlite3
+conn = sqlite3.connect('emaildb.sqlite')
+cur = conn.cursor()
+cur.execute('''
+DROP TABLE IF EXISTS Counts''')
+cur.execute('''
+CREATE TABLE Counts (email TEXT, count INTEGER)''')
+fname = "mbox-short.txt"
+if(len(fname)<1) : fname = "mbox-short.txt"
+fh = open(fname)
+for line in fh:
+    if not line.startswith("From: ") : continue
+    pieces = line.split()
+    print "->",pieces,"<-"
+    email = pieces[1]
+    '''******************************************************
+    ? is a placeholder -- that it is going to be something
+    (email,) is a tuple (row) -- email gets substituted for ? 
+    parameter substitution using ? is a safety measure
+    *******************************************************'''
+    cur.execute('SELECT count FROM Counts WHERE email = ?', (email, ))
+    # if email matches the one in the database, increments count by 1
+    try:
+        count = cur.fetchone()[0]
+        cur.execute('UPDATE Counts SET count=count+1 WHERE email = ?',
+                    (email,))
+    # if db has not seen the email yet, set the value of count as 1
+    except:
+        cur.execute('''INSERT INTO Counts (email, count)
+                    VALUES (?,1)''',(email,))
+    conn.commit()
+    
+# obtaining top 10 descending counts of emails
+sqlstr = "SELECT email, count FROM Counts ORDER BY count DESC LIMIT 10"
+
+for row in cur.execute(sqlstr) : # row is a tuple
+    print str(row[0]), row[1] # str in case UTF-8
+```
+
+###7) counting organization SQL assignment example
+```{r}
+## count by organization (domain name of email)
+import re
+import sqlite3
+conn = sqlite3.connect('emaildb_assignment.sqlite')
+cur = conn.cursor()
+cur.execute('''
+DROP TABLE IF EXISTS Counts''')
+cur.execute('''
+CREATE TABLE Counts (org TEXT, count INTEGER)''')
+fname = "mbox.txt"
+fh = open(fname)
+
+for line in fh:
+    if not line.startswith("From "): continue
+    line = line.rstrip()
+    #org = re.findall("@(\S+)\s*",line)[0]
+    orglist = re.findall("@(\S+)\s*",line)
+    if len(orglist) > 0 :
+        org = orglist[0]
+        cur.execute('SELECT count FROM Counts WHERE org = ?', (org, ))
+    # if email matches the one in the dKatabase, increments count by 1
+    try:
+        count = cur.fetchone()[0]
+        cur.execute('UPDATE Counts SET count=count+1 WHERE org = ?',
+                    (org,))
+    # if db has not seen the email yet, set the value of count as 1
+    except:
+        cur.execute('''INSERT INTO Counts (org, count)
+                    VALUES (?,1)''',(org,))
+conn.commit()
+
+sqlstr = "SELECT org, count FROM Counts ORDER BY count DESC"
+
+for row in cur.execute(sqlstr) : # row is a tuple
+    print "->"+str(row[0])+"<-", row[1] # str in case UTF-8
+
+```
