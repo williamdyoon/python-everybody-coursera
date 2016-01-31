@@ -268,8 +268,8 @@ for row in cur.execute(sqlstr) : # row is a tuple
 ## antranig@caret.cam.ac.uk 1
 ## gopal.ramasammycook@gmail.com 1</code></pre>
 </div>
-<div id="counting-organization-sql-assignment-example" class="section level3">
-<h3>7) counting organization SQL assignment example</h3>
+<div id="counting-organization-sql-assignment" class="section level3">
+<h3>7) counting organization SQL assignment</h3>
 <pre class="python"><code>## count by organization (domain name of email)
 import re
 import sqlite3
@@ -304,8 +304,7 @@ conn.commit()
 sqlstr = &quot;SELECT org, count FROM Counts ORDER BY count DESC&quot;
 
 for row in cur.execute(sqlstr) : # row is a tuple
-    print &quot;-&gt;&quot;+str(row[0])+&quot;&lt;-&quot;, row[1] # str in case UTF-8
-</code></pre>
+    print &quot;-&gt;&quot;+str(row[0])+&quot;&lt;-&quot;, row[1] # str in case UTF-8</code></pre>
 <pre><code>## -&gt;iupui.edu&lt;- 536
 ## -&gt;umich.edu&lt;- 491
 ## -&gt;indiana.edu&lt;- 178
@@ -327,6 +326,179 @@ for row in cur.execute(sqlstr) : # row is a tuple
 ## -&gt;ucdavis.edu&lt;- 1
 ## -&gt;fhda.edu&lt;- 1
 ## -&gt;utoronto.ca&lt;- 1</code></pre>
+</div>
+<div id="connecting-xml-and-sql-using-python-demo" class="section level3">
+<h3>8) connecting XML and SQL using python demo</h3>
+<pre class="python"><code>import xml.etree.ElementTree as ET
+import sqlite3
+
+conn = sqlite3.connect('trackdb.sqlite')
+cur = conn.cursor()
+
+cur.execute(&quot;DROP TABLE IF EXISTS Artist&quot;)
+cur.execute(&quot;DROP TABLE IF EXISTS Album&quot;)
+cur.execute(&quot;DROP TABLE IF EXISTS Track&quot;)
+
+
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Artist (
+    id   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name TEXT UNIQUE
+)''')
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Album (
+    id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    artist_id INTEGER,
+    title     TEXT UNIQUE
+)''')
+cur.execute('''
+CREATE TABLE IF NOT EXISTS Track (
+    id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    album_id  INTEGER,
+    title     TEXT UNIQUE,
+    len       INTEGER,
+    rating    INTEGER,
+    count     INTEGER
+)''')
+fname = &quot;Library.xml&quot;
+
+''' example of XML format
+&lt;key&gt;Track ID&lt;/key&gt;&lt;integer&gt;369&lt;/integer&gt;
+&lt;key&gt;Name&lt;/key&gt;&lt;string&gt;Another One Bites The Dust&lt;/string&gt;
+&lt;key&gt;Artist&lt;/key&gt;&lt;string&gt;Queen&lt;/string&gt;'''
+
+## function that returns the child text if the dictionary contains the key
+def lookup(d, key):
+    found = False
+    for child in d:
+        if found: return child.text
+        if child.tag == &quot;key&quot; and child.text == key :
+            found = True
+    return None
+stuff = ET.parse(fname)
+## three &lt;dict&gt; level deep inside (just the way how Library.xml handles)
+all = stuff.findall(&quot;dict/dict/dict&quot;)
+print &quot;Dict count:&quot;, len(all)
+for entry in all:
+    if(lookup(entry,&quot;Track ID&quot;) is None): continue
+    name = lookup(entry, &quot;Name&quot;)
+    artist = lookup(entry, &quot;Artist&quot;)
+    album = lookup(entry, &quot;Album&quot;)
+    count = lookup(entry, &quot;Play Count&quot;)
+    rating = lookup(entry, &quot;Rating&quot;)
+    length = lookup(entry, &quot;Total Time&quot;)
+    
+    # error check
+    if name is None or artist is None or album is None:
+        continue
+    
+    # INSERT if it's not there, and IGNORE if it's already there, or if error
+    cur.execute(&quot;INSERT OR IGNORE INTO Artist (name) VALUES (?)&quot;,(artist,))
+    # get the artist_id for the artist that was added 
+    cur.execute(&quot;SELECT id FROM Artist WHERE name = ?&quot;,(artist,))
+    artist_id = cur.fetchone()[0]
+    
+    cur.execute('''INSERT OR IGNORE INTO Album (title, artist_id) 
+                VALUES(?,?)''',(album,artist_id))
+    cur.execute(&quot;SELECT id FROM Album where title = ?&quot;, (album,))
+    album_id = cur.fetchone()[0]
+    
+    cur.execute('''INSERT OR REPLACE INTO TRACK (title, album_id, len, rating, count)
+                VALUES (?,?,?,?,?)''',(name,album_id,length,rating,count))
+conn.commit()</code></pre>
+<pre><code>## Dict count: 404</code></pre>
+</div>
+<div id="music-track-database-assignment" class="section level3">
+<h3>9) music track database assignment</h3>
+<pre class="python"><code>import xml.etree.ElementTree as ET
+import sqlite3
+conn = sqlite3.connect('trackdb_assignment.sqlite')
+cur = conn.cursor()
+cur.execute(&quot;DROP TABLE IF EXISTS Artist&quot;)
+cur.execute(&quot;DROP TABLE IF EXISTS Genre&quot;)
+cur.execute(&quot;DROP TABLE IF EXISTS Album&quot;)
+cur.execute(&quot;DROP TABLE IF EXISTS Track&quot;)
+cur.execute('''
+CREATE TABLE Artist (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name    TEXT UNIQUE
+);''')
+cur.execute('''
+CREATE TABLE Genre (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    name    TEXT UNIQUE
+);''')
+cur.execute('''
+CREATE TABLE Album (
+    id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+    artist_id  INTEGER,
+    title   TEXT UNIQUE
+);''')
+cur.execute('''
+CREATE TABLE Track (
+    id  INTEGER NOT NULL PRIMARY KEY 
+        AUTOINCREMENT UNIQUE,
+    title TEXT  UNIQUE,
+    album_id  INTEGER,
+    genre_id  INTEGER,
+    len INTEGER, rating INTEGER, count INTEGER
+);''')
+fname = &quot;Library.xml&quot;
+def lookup(d, key):
+    found = False
+    for child in d:
+        if found: return child.text
+        if child.tag == &quot;key&quot; and child.text == key :
+            found = True
+    return None
+stuff = ET.parse(fname)
+all = stuff.findall(&quot;dict/dict/dict&quot;)
+for entry in all:
+    if(lookup(entry,&quot;Track ID&quot;) is None): continue
+    genre_name = lookup(entry, &quot;Genre&quot;)
+    artist_name = lookup(entry, &quot;Artist&quot;)
+    album_title = lookup(entry, &quot;Album&quot;)
+    track_title = lookup(entry, &quot;Name&quot;)
+    track_len = lookup(entry, &quot;Total Time&quot;)
+    track_rating = lookup(entry, &quot;Rating&quot;)
+    track_count = lookup(entry, &quot;Play Count&quot;)
+    if (genre_name is None or artist_name is None or 
+        album_title is None or track_title is None): continue
+    cur.execute(&quot;INSERT OR IGNORE INTO Genre (name) VALUES (?)&quot;, (genre_name,))
+    cur.execute(&quot;SELECT id FROM Genre WHERE name = ?&quot;, (genre_name,))
+    genre_id = cur.fetchone()[0]
+    
+    cur.execute(&quot;INSERT OR IGNORE INTO Artist (name) VALUES (?)&quot;, (artist_name,))
+    cur.execute(&quot;SELECT id FROM Artist WHERE name = ?&quot;, (artist_name,))
+    artist_id = cur.fetchone()[0]
+    
+    cur.execute(&quot;INSERT OR IGNORE INTO Album (artist_id, title) VALUES (?,?)&quot;, 
+                (artist_id, album_title))
+    cur.execute(&quot;SELECT id from Album where title = ?&quot;, (album_title,))
+    album_id = cur.fetchone()[0]
+    cur.execute('''INSERT OR REPLACE INTO Track 
+                (title, album_id, genre_id, len, rating, count)
+                VALUES (?,?,?,?,?,?)''',
+                (track_title, album_id, genre_id, track_len, track_rating, track_count)
+    )
+conn.commit()
+sql_query = '''
+SELECT Track.title, Artist.name, Album.title, Genre.name 
+    FROM Track JOIN Genre JOIN Album JOIN Artist 
+    ON Track.genre_id = Genre.ID and Track.album_id = Album.id 
+        AND Album.artist_id = Artist.id
+    ORDER BY Artist.name LIMIT 3
+'''
+for iteration in cur.execute(sql_query):
+    print str(iteration[0])
+#sqlstr = &quot;SELECT org, count FROM Counts ORDER BY count DESC&quot;
+
+#for row in cur.execute(sqlquery) : # row is a tuple
+#    print &quot;-&gt;&quot;+str(row[0])+&quot;&lt;-&quot;, row[1] # str in case UTF-8
+</code></pre>
+<pre><code>## For Those About To Rock (We Salute You)
+## Hells Bells
+## Shake Your Foundations</code></pre>
 </div>
 </div>
 </div>
